@@ -77,7 +77,6 @@ module.exports = {
     test: (config, val, data, cb) ->
       if _.isString(val)
         val = val.replace(/\s/g, '')
-        console.log(val)
         if RE_MONGOID.test(val) is true
           cb(true, new mongojs.ObjectId(val))
         else
