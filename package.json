@@ -7,10 +7,11 @@
     "url": "git@git.oco.co.za:validator.git"
   },
   "author": "Jurie-Jan Botha <juriejanbotha@gmail.com>",
-  "main": "lib/index.js",
+  "main": "lib/index.coffee",
   "dependencies": {
     "async": "^0.9.0",
-    "lodash": "^3.0.0"
+    "lodash": "^3.0.0",
+    "mongojs": "^0.18.1"
   },
   "devDependencies": {
     "chai": "^1.10.0",

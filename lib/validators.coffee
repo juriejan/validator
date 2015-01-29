@@ -2,6 +2,7 @@
 _ = require('lodash')
 
 async = require('async')
+mongojs = require('mongojs')
 
 strings = require('./strings')
 
@@ -76,7 +77,11 @@ module.exports = {
     test: (config, val, data, cb) ->
       if _.isString(val)
         val = val.replace(/\s/g, '')
-        cb(RE_MONGOID.test(val), val)
+        console.log(val)
+        if RE_MONGOID.test(val) is true
+          cb(true, new mongojs.ObjectId(val))
+        else
+          cb(false, val)
       else
         cb(false, val)
   }
