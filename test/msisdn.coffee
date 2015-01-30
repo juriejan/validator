@@ -76,6 +76,30 @@ module.exports = testMsisdn = (testValidator) ->
       testValidator(' +2 7 8 2 1 2 3 ', false, '+2782123')
     )
 
+    it('too many digits with no country code', () ->
+      testValidator('08212312345', false, '08212312345')
+    )
+
+    it('too many digits with country code', () ->
+      testValidator('278212312345', false, '278212312345')
+    )
+
+    it('too many digits with country code and plus', () ->
+      testValidator('+278212312345', false, '+278212312345')
+    )
+
+    it('too many digits with spaces and no country code', () ->
+      testValidator('0 82 12 3 1234 5', false, '08212312345')
+    )
+
+    it('too many digits with spaces and country code', () ->
+      testValidator('  2782  123  12345', false, '278212312345')
+    )
+
+    it('too many digits with spaces, country code and plus', () ->
+      testValidator(' +2 7 8 2 1 2 3 1 2 3 4 5 ', false, '+278212312345')
+    )
+
   )
 
 testValidator = (val, result, modified) ->
