@@ -1,5 +1,6 @@
 
 expect = require('chai').expect
+mongojs = require('mongojs')
 
 validators = require('../lib/validators')
 
@@ -21,7 +22,9 @@ describe('MongoDB ID validator', () ->
 
     it('valid ID with spaces', () ->
       testValidator(
-        '  50 7f 1f77b cf86cd79  9439011  ', true, '507f1f77bcf86cd799439011'
+        '  50 7f 1f77b cf86cd79  9439011  '
+        true
+        new mongojs.ObjectId('507f1f77bcf86cd799439011')
       )
     )
 
