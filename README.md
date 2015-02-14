@@ -19,15 +19,14 @@ bower install browserify-data
 
 ## Contributing
 
-
-## Setup
+To get started clone the repository and install the development dependencies.
 
 ```bash
 npm install -d
 ```
 
 
-## Running tests
+### Running tests
 
 ```bash
 gulp test
