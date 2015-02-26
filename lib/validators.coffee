@@ -67,11 +67,26 @@ msisdn = {
 }
 
 
+minlength = {
+  msg: strings.TOO_SHORT
+  test: (config, val, data, cb) -> cb(_.size(val) >= config)
+}
+
+
+maxlength = {
+  msg: strings.TOO_LONG
+  test: (config, val, data, cb) -> cb(_.size(val) <= config)
+}
+
+
 module.exports = {
   email
   msisdn
   latitude
   longitude
+  minlength: minlength
+  maxlength: maxlength
+
   mongoid: {
     msg: strings.INVALID.MONGOID
     test: (config, val, data, cb) ->
@@ -100,10 +115,6 @@ module.exports = {
         (cb) -> email.test(config, val, data, cb)
         (val, cb) -> msisdn.test(config, val, data, cb)
       ], done)
-  }
-  minlength: {
-    msg: strings.TOO_SHORT
-    test: (config, val, data, cb) -> cb(_.size(val) >= config)
   }
   enum: {
     msg: strings.INVALID.VALUE

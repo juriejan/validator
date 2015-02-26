@@ -2,6 +2,7 @@
 module.exports = {
   REQUIRED: 'Required'
   TOO_SHORT: 'Too short'
+  TOO_LONG: 'Too long'
   IN_USE: 'In use'
   BLOCKED: 'Field is blocked'
   NOT_AVAILABLE: 'Not available'
