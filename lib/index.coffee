@@ -17,7 +17,7 @@ module.exports = (validation={}) ->
           if val? then data[field] = val
           cb()
         else
-          cb(_.template(validator.msg, {config}))
+          cb(_.template(validator.msg)({config}))
       )
     validateField: (data) -> (o, cb) ->
       [field, rules] = o
