@@ -13,7 +13,7 @@ RE_MONGOID = /^[a-z0-9]{24}$/
 
 
 latitude = {
-  msg: (config) -> strings.INVALID.LATITUDE
+  msg: strings.INVALID.LATITUDE
   test: (config, val, data, cb) ->
     val = parseFloat(val)
     if _.isNaN(val) then return cb(false, val)
@@ -23,7 +23,7 @@ latitude = {
 
 
 longitude = {
-  msg: (config) -> strings.INVALID.LONGITUDE
+  msg: strings.INVALID.LONGITUDE
   test: (config, val, data, cb) ->
     val = parseFloat(val)
     if _.isNaN(val) then return cb(false, val)
@@ -121,7 +121,7 @@ module.exports = {
     test: (config, val, data, cb) -> cb(config.indexOf(val) > -1)
   }
   geocoordinates: {
-    msg: (config) -> strings.INVALID.GEO_COORDINATES
+    msg: strings.INVALID.GEO_COORDINATES
     test: (config, val, data, done) ->
       async.parallel({
         lat: (cb) -> latitude.test(config, val.lat, data, (result, val) ->
