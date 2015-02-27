@@ -3,11 +3,13 @@ _ = require('lodash')
 
 async = require('async')
 
+strings = require('./strings')
 validators = require('./validators')
 
 
 module.exports = (validation={}) ->
   return {
+    strings: strings
     validateRule: (field, data) -> (o, cb) ->
       [rule, config] = o
       value = data[field]
