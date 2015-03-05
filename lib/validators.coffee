@@ -69,13 +69,18 @@ msisdn = {
 
 minlength = {
   msg: strings.TOO_SHORT
-  test: (config, val, data, cb) -> cb(_.size(val) >= config)
+  test: (config, val, data, cb) -> cb(_.size(val) >= config, val)
 }
 
 
 maxlength = {
   msg: strings.TOO_LONG
-  test: (config, val, data, cb) -> cb(_.size(val) <= config)
+  test: (config, val, data, cb) -> cb(_.size(val) <= config, val)
+}
+
+string = {
+  msg: strings.INVALID.STRING
+  test: (config, val, data, cb) -> cb(_.isString(val), val)
 }
 
 
@@ -84,9 +89,9 @@ module.exports = {
   msisdn
   latitude
   longitude
-  minlength: minlength
-  maxlength: maxlength
-
+  minlength
+  maxlength
+  string
   mongoid: {
     msg: strings.INVALID.MONGOID
     test: (config, val, data, cb) ->
