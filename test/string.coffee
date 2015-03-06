@@ -1,14 +1,8 @@
 
-expect = require('chai').expect
-
-validators = require('../lib/validators')
+utils = require('./utils')
 
 
-testValidator = (val, result, modified) ->
-  validators.string.test({}, val, {}, (err, val) ->
-    expect(err).to.eql(result)
-    if modified? then expect(val).to.eql(modified)
-  )
+testValidator = utils.testValidator('string')
 
 
 describe('String validator', () ->
@@ -16,11 +10,11 @@ describe('String validator', () ->
   describe('passes over', () ->
 
     it('string', () ->
-      testValidator('abc', true)
+      testValidator({}, 'abc', true)
     )
 
     it('empty string', () ->
-      testValidator('', true)
+      testValidator({}, '', true)
     )
 
   )
@@ -28,31 +22,31 @@ describe('String validator', () ->
   describe('returns error on', () ->
 
     it('zero', () ->
-      testValidator(0, false)
+      testValidator({}, 0, false)
     )
 
     it('number', () ->
-      testValidator(5, false)
+      testValidator({}, 5, false)
     )
 
     it('true boolean', () ->
-      testValidator(true, false)
+      testValidator({}, true, false)
     )
 
     it('false boolean', () ->
-      testValidator(false, false)
+      testValidator({}, false, false)
     )
 
     it('null', () ->
-      testValidator(null, false)
+      testValidator({}, null, false)
     )
 
     it('undefined', () ->
-      testValidator(undefined, false)
+      testValidator({}, undefined, false)
     )
 
     it('empty array', () ->
-      testValidator([], false)
+      testValidator({}, [], false)
     )
 
   )

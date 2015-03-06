@@ -1,15 +1,8 @@
 
-expect = require('chai').expect
-mongojs = require('mongojs')
-
-validators = require('../lib/validators')
+utils = require('./utils')
 
 
-testValidator = (config, val, result, modified) ->
-  validators.maxlength.test(config, val, {}, (err, val) ->
-    expect(err).to.eql(result)
-    if modified? then expect(val).to.eql(modified)
-  )
+testValidator = utils.testValidator('maxlength')
 
 
 describe('Maximum length validator', () ->
