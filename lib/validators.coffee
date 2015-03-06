@@ -80,7 +80,7 @@ msisdn = {
 }
 
 integer = {
-  msg: strings.INVALID_INTEGER
+  msg: strings.INVALID.INTEGER
   test: (config, val, data, cb) ->
     result = parseInt(val)
     if _.isNaN(result)
