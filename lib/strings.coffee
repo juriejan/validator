@@ -7,6 +7,7 @@ module.exports = {
   REQUIRED: 'Required'
   TOO_SHORT: 'Too short'
   TOO_LONG: 'Too long'
+  DATE: "Date did not match '<%= config %>'"
   INVALID: {
     EMAIL: 'Invalid email address'
     EMAIL_MSISDN: 'Invalid email address and mobile number'

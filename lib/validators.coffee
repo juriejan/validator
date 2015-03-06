@@ -3,6 +3,7 @@ _ = require('lodash')
 
 async = require('async')
 mongojs = require('mongojs')
+moment = require('moment')
 
 strings = require('./strings')
 
@@ -12,25 +13,20 @@ RE_MSISDN = /^(\+?27|0)(\d{9})$/
 RE_MONGOID = /^[a-z0-9]{24}$/
 
 
-latitude = {
-  msg: strings.INVALID.LATITUDE
+date = {
+  msg: strings.DATE
   test: (config, val, data, cb) ->
-    val = parseFloat(val)
-    if _.isNaN(val) then return cb(false, val)
-    if not(-90 < val < 90) then return cb(false, val)
-    cb(true, val)
+    if _.isNumber(val) or _.isBoolean(val) or _.isArray(val)
+      return cb(false, val)
+    if not val?
+      return cb(true, val)
+    val = val.trim()
+    if _.size(val) is 0
+      return cb(true, val)
+    date = moment(val, config, true)
+    if date.isValid() then cb(true, date.toDate())
+    else cb(false, val)
 }
-
-
-longitude = {
-  msg: strings.INVALID.LONGITUDE
-  test: (config, val, data, cb) ->
-    val = parseFloat(val)
-    if _.isNaN(val) then return cb(false, val)
-    if not(-180 < val < 180) then return cb(false, val)
-    cb(true, val)
-}
-
 
 email = {
   msg: strings.INVALID.EMAIL
@@ -47,6 +43,23 @@ email = {
       cb(false, val)
 }
 
+latitude = {
+  msg: strings.INVALID.LATITUDE
+  test: (config, val, data, cb) ->
+    val = parseFloat(val)
+    if _.isNaN(val) then return cb(false, val)
+    if not(-90 < val < 90) then return cb(false, val)
+    cb(true, val)
+}
+
+longitude = {
+  msg: strings.INVALID.LONGITUDE
+  test: (config, val, data, cb) ->
+    val = parseFloat(val)
+    if _.isNaN(val) then return cb(false, val)
+    if not(-180 < val < 180) then return cb(false, val)
+    cb(true, val)
+}
 
 msisdn = {
   msg: strings.INVALID.MSISDN
@@ -66,23 +79,6 @@ msisdn = {
       cb(false, val)
 }
 
-
-minlength = {
-  msg: strings.TOO_SHORT
-  test: (config, val, data, cb) -> cb(_.size(val) >= config, val)
-}
-
-
-maxlength = {
-  msg: strings.TOO_LONG
-  test: (config, val, data, cb) -> cb(_.size(val) <= config, val)
-}
-
-string = {
-  msg: strings.INVALID.STRING
-  test: (config, val, data, cb) -> cb(_.isString(val), val)
-}
-
 integer = {
   msg: strings.INVALID_INTEGER
   test: (config, val, data, cb) ->
@@ -93,8 +89,28 @@ integer = {
       cb(true, result)
 }
 
+minlength = {
+  msg: strings.TOO_SHORT
+  test: (config, val, data, cb) -> cb(_.size(val) >= config, val)
+}
+
+maxlength = {
+  msg: strings.TOO_LONG
+  test: (config, val, data, cb) -> cb(_.size(val) <= config, val)
+}
+
+string = {
+  msg: strings.INVALID.STRING
+  test: (config, val, data, cb) ->
+    if not val?
+      cb(true, val)
+    else
+      cb(_.isString(val), val)
+}
+
 
 module.exports = {
+  date
   email
   msisdn
   integer

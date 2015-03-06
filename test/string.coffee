@@ -17,6 +17,14 @@ describe('String validator', () ->
       testValidator({}, '', true)
     )
 
+    it('null', () ->
+      testValidator({}, null, true)
+    )
+
+    it('undefined', () ->
+      testValidator({}, undefined, true)
+    )
+
   )
 
   describe('returns error on', () ->
@@ -35,14 +43,6 @@ describe('String validator', () ->
 
     it('false boolean', () ->
       testValidator({}, false, false)
-    )
-
-    it('null', () ->
-      testValidator({}, null, false)
-    )
-
-    it('undefined', () ->
-      testValidator({}, undefined, false)
     )
 
     it('empty array', () ->
