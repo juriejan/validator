@@ -33,6 +33,10 @@ describe('Integer validator', () ->
 
   describe('returns error on', () ->
 
+    it('string', () ->
+      testValidator({}, 'sample', false)
+    )
+
     it('empty string', () ->
       testValidator({}, '', false)
     )
