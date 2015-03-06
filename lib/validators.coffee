@@ -83,10 +83,21 @@ string = {
   test: (config, val, data, cb) -> cb(_.isString(val), val)
 }
 
+integer = {
+  msg: strings.INVALID_INTEGER
+  test: (config, val, data, cb) ->
+    result = parseInt(val)
+    if _.isNaN(result)
+      cb(false, val)
+    else
+      cb(true, result)
+}
+
 
 module.exports = {
   email
   msisdn
+  integer
   latitude
   longitude
   minlength
