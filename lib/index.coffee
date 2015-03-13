@@ -7,7 +7,7 @@ strings = require('./strings')
 validators = require('./validators')
 
 
-module.exports = (validation={}) ->
+Validator = (validation={}) ->
   return {
     strings: strings
     validateRule: (field, data) -> (o, cb) ->
@@ -37,3 +37,10 @@ module.exports = (validation={}) ->
         cb(err, _.object(result))
       )
   }
+
+
+module.exports = {
+  Validator
+  validators
+  strings
+}
