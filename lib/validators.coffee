@@ -4,6 +4,7 @@ _ = require('lodash')
 async = require('async')
 mongojs = require('mongojs')
 moment = require('moment')
+validUrl = require('valid-url')
 
 strings = require('./strings')
 
@@ -108,6 +109,22 @@ string = {
       cb(_.isString(val), val)
 }
 
+url = {
+  msg: strings.INVALID.URI
+  test: (config, val, data, cb) ->
+    if not val?
+      cb(true, val)
+    else
+      if _.isString(val)
+        val = val.replace(/\s/g, '')
+        if _.size(val) is 0
+          cb(true, val)
+        else
+          cb(!!validUrl.isWebUri(val), val)
+      else
+        cb(false, val)
+}
+
 
 module.exports = {
   date
@@ -119,6 +136,7 @@ module.exports = {
   minlength
   maxlength
   string
+  url
   mongoid: {
     msg: strings.INVALID.MONGOID
     test: (config, val, data, cb) ->
