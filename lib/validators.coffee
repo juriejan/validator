@@ -44,6 +44,25 @@ email = {
       cb(false, val)
 }
 
+encoding = {
+  msg: strings.ENCODING
+  test: (config, val, data, cb) ->
+    if not val?
+      return cb(true, val)
+    if not _.isString(val)
+      return cb(false, val)
+    if config is 'url'
+      if val.search(/[^\w\d%]/g) > -1
+        return cb(false, val)
+      try
+        val = decodeURIComponent(val)
+        cb(true, val)
+      catch err
+        cb(false, val)
+    else
+      cb(false, val)
+}
+
 latitude = {
   msg: strings.INVALID.LATITUDE
   test: (config, val, data, cb) ->
@@ -129,6 +148,7 @@ url = {
 module.exports = {
   date
   email
+  encoding
   msisdn
   integer
   latitude

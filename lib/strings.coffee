@@ -1,13 +1,14 @@
 
 module.exports = {
   BLOCKED: 'Field is blocked'
+  DATE: "Date did not match '<%= config %>'"
+  ENCODING: "Not fully encoded using the '<%= config %>' standard"
   IN_USE: 'In use'
   MATCH_REQUIRED: 'Needs to match <%= config.name %>'
   NOT_AVAILABLE: 'Not available'
   REQUIRED: 'Required'
   TOO_SHORT: 'Too short'
   TOO_LONG: 'Too long'
-  DATE: "Date did not match '<%= config %>'"
   INVALID: {
     EMAIL: 'Invalid email address'
     EMAIL_MSISDN: 'Invalid email address and mobile number'
