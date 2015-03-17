@@ -51,19 +51,19 @@ module.exports = emailTests = (testValidator) ->
     )
 
     it('missing top level domain with spaces', () ->
-      testValidator({}, '  abc@exam ple ', false)
+      testValidator({}, '  abc@exam ple ', false, 'abc@example')
     )
 
     it('missing domain name with spaces', () ->
-      testValidator({}, 'abc @. com', false)
+      testValidator({}, 'abc @. com', false, 'abc@.com')
     )
 
     it('missing account name with spaces', () ->
-      testValidator({}, ' @ example.com', false)
+      testValidator({}, ' @ example.com', false, '@example.com')
     )
 
     it('missing @ sign with spaces', () ->
-      testValidator({}, ' abce  xam ple.com', false)
+      testValidator({}, ' abce  xam ple.com', false, 'abcexample.com')
     )
 
   )

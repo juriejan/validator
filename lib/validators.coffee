@@ -176,7 +176,7 @@ module.exports = {
       valid or= _.isBoolean(val)
       valid or= _.isNumber(val)
       valid or= _.size(val) > 0
-      cb(valid)
+      cb(valid, val)
   }
   emailmsisdn: {
     msg: strings.INVALID.EMAIL_MSISDN
@@ -188,7 +188,7 @@ module.exports = {
   }
   enum: {
     msg: strings.INVALID.VALUE
-    test: (config, val, data, cb) -> cb(config.indexOf(val) > -1)
+    test: (config, val, data, cb) -> cb(config.indexOf(val) > -1, val)
   }
   geocoordinates: {
     msg: strings.INVALID.GEO_COORDINATES

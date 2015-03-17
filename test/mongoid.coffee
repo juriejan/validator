@@ -1,6 +1,8 @@
 
-mongojs = require('mongojs')
+mongo = require('mongojs')
 utils = require('./utils')
+
+ObjectId = mongo.ObjectId
 
 
 testValidator = utils.testValidator('mongoid')
@@ -11,7 +13,12 @@ describe('MongoDB ID validator', () ->
   describe('passes over', () ->
 
     it('valid ID', () ->
-      testValidator({}, '507f1f77bcf86cd799439011', true)
+      testValidator(
+        {},
+        '507f1f77bcf86cd799439011',
+        true,
+        new ObjectId('507f1f77bcf86cd799439011')
+      )
     )
 
     it('valid ID with spaces', () ->
@@ -19,7 +26,7 @@ describe('MongoDB ID validator', () ->
         {}
         '  50 7f 1f77b cf86cd79  9439011  '
         true
-        new mongojs.ObjectId('507f1f77bcf86cd799439011')
+        new ObjectId('507f1f77bcf86cd799439011')
       )
     )
 

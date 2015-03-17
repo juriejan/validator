@@ -25,7 +25,7 @@ describe('Date validator', () ->
     )
 
     it('blank string', () ->
-      testValidator(FORMAT, '   ', true)
+      testValidator(FORMAT, '   ', true, '')
     )
 
     it('null', () ->

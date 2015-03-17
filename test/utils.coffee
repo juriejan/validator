@@ -7,9 +7,10 @@ expect = chai.expect
 
 
 testValidator = (name) -> (config, val, result, modified) ->
-  validators[name].test(config, val, {}, (err, val) ->
+  validators[name].test(config, val, {}, (err, newVal) ->
     expect(err).to.eql(result)
-    if modified? then expect(val).to.eql(modified)
+    if not modified? then modified = val
+    expect(newVal).to.eql(modified)
   )
 
 
