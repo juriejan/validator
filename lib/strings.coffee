@@ -2,7 +2,7 @@
 module.exports = {
   BLOCKED: 'Field is blocked'
   DATE: "Date did not match '<%= config %>'"
-  ENCODING: "Not fully encoded using the '<%= config %>' standard"
+  ENCODING: "Not fully encoded using the '<%= config %>' standard due to '<%= fault %>'"
   IN_USE: 'In use'
   MATCH_REQUIRED: 'Needs to match <%= config.name %>'
   NOT_AVAILABLE: 'Not available'

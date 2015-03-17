@@ -10,7 +10,7 @@ describe('Encoding validator', () ->
   describe('passes over', () ->
 
     it('url encoded string with correct encoding', () ->
-      testValidator('url', 'a%20b%22c+d', true, 'a b"c d')
+      testValidator('url', 'a%20b%22c+d.f', false, 'a b"c d.f')
     )
 
     it('empty string', () ->
@@ -30,11 +30,11 @@ describe('Encoding validator', () ->
   describe('returns error on', () ->
 
     it('url encoded string with bad encoding', () ->
-      testValidator('url', 'a%"20b%22c', false)
+      testValidator('url', 'a%%20b%22c', false)
     )
 
     it("url encoded string that isn't fully encoded", () ->
-      testValidator('url', 'a%20b"c', false)
+      testValidator('url', 'a%20b"c', false, 'a%20b"c', '"')
     )
 
     it('blank string', () ->

@@ -13,9 +13,9 @@ Validator = (validation={}) ->
       [rule, config] = o
       value = data[field]
       validator = validators[rule]
-      validator.test(config, value, data, (result, val) ->
+      validator.test(config, value, data, (result, val, fault) ->
         data[field] = val
-        cb(if not result then _.template(validator.msg)({config}))
+        cb(if not result then _.template(validator.msg)({config, fault}))
       )
     validateField: (data) -> (o, cb) ->
       [field, rules] = o
