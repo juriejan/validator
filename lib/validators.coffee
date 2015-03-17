@@ -4,7 +4,7 @@ _ = require('lodash')
 async = require('async')
 mongojs = require('mongojs')
 moment = require('moment')
-validUrl = require('valid-url')
+validurl = require('valid-url')
 
 strings = require('./strings')
 
@@ -12,6 +12,8 @@ strings = require('./strings')
 RE_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 RE_MSISDN = /^(\+?27|0)(\d{9})$/
 RE_MONGOID = /^[a-z0-9]{24}$/
+
+RE_ENCODING_URL = /[^\w\d%+]/g
 
 
 date = {
@@ -52,10 +54,11 @@ encoding = {
     if not _.isString(val)
       return cb(false, val)
     if config is 'url'
-      if val.search(/[^\w\d%]/g) > -1
+      if val.search(RE_ENCODING_URL) > -1
         return cb(false, val)
       try
         val = decodeURIComponent(val)
+        val = val.replace(/\+/g, ' ')
         cb(true, val)
       catch err
         cb(false, val)
@@ -139,7 +142,7 @@ url = {
         if _.size(val) is 0
           cb(true, val)
         else
-          cb(!!validUrl.isWebUri(val), val)
+          cb(!!validurl.isWebUri(val), val)
       else
         cb(false, val)
 }
