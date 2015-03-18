@@ -14,6 +14,8 @@ gulp.task('mocha:app', () ->
   .pipe(mocha({
     grep: new RegExp(args['g'])
   }))
+  .once('error', () -> process.exit(1))
+  .once('end', () -> process.exit())
 )
 
 gulp.task('test', (cb) ->
