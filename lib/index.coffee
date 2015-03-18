@@ -9,22 +9,24 @@ validators = require('./validators')
 
 Validator = (validation={}) ->
   return {
-    validateRule: (state, field, data) -> (o, cb) ->
-      [rule, config] = o
+    validateRule: (state, field, data) -> (cb) ->
+      [rule, config] = state.rules.pop()
       value = data[field]
       validator = validators[rule]
       validator.test(config, value, data, (err, result, val, fault) ->
         if err? then return cb(err)
         data[field] = val
-        state.result = result
-        state.message = _.template(validator.msg)({config, fault, val})
+        if not result
+          state.message = _.template(validator.msg)({config, fault, val})
         cb()
       )
     validateField: (data) -> (o, cb) ->
       [field, rules] = o
-      state = {result:true, message:null}
+      rules = _.pairs(rules)
+      rules.reverse()
+      state = {message:null, rules}
       validateRule = _.bind(@.validateRule(state, field, data), @)
-      async.until((() -> not state.result), validateRule, (err) ->
+      async.until((() -> state.message? or _.size(state.rules) is 0), validateRule, (err) ->
         cb(null, [field, state.message])
       )
     validate: (data, cb) ->
