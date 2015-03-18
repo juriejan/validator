@@ -30,21 +30,21 @@ describe('MongoDB ID validator', () ->
       )
     )
 
-  )
-
-  describe('returns error on', () ->
-
     it('empty string', () ->
-      testValidator({}, '', false)
+      testValidator({}, '', true)
     )
 
     it('null', () ->
-      testValidator({}, null, false)
+      testValidator({}, null, true)
     )
 
     it('undefined', () ->
-      testValidator({}, undefined, false)
+      testValidator({}, undefined, true)
     )
+
+  )
+
+  describe('returns error on', () ->
 
     it('empty array', () ->
       testValidator({}, [], false)

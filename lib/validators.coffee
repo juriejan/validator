@@ -84,6 +84,22 @@ longitude = {
     cb(true, val)
 }
 
+mongoid = {
+  msg: strings.INVALID.MONGOID
+  test: (config, val, data, cb) ->
+    if not val?
+      return cb(true, val)
+    if not _.isString(val)
+      return cb(false, val)
+    if _.size(val) is 0
+      return cb(true, val)
+    val = val.replace(/\s/g, '')
+    if RE_MONGOID.test(val) is true
+      cb(true, new mongojs.ObjectId(val))
+    else
+      cb(false, val)
+}
+
 msisdn = {
   msg: strings.INVALID.MSISDN
   test: (config, val, data, cb) ->
@@ -177,23 +193,12 @@ module.exports = {
   integer
   latitude
   longitude
-  minlength
   maxlength
+  minlength
+  mongoid
   reference
   string
   url
-  mongoid: {
-    msg: strings.INVALID.MONGOID
-    test: (config, val, data, cb) ->
-      if _.isString(val)
-        val = val.replace(/\s/g, '')
-        if RE_MONGOID.test(val) is true
-          cb(true, new mongojs.ObjectId(val))
-        else
-          cb(false, val)
-      else
-        cb(false, val)
-  }
   required: {
     msg: strings.REQUIRED
     test: (config, val, data, cb) ->
