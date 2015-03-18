@@ -36,7 +36,7 @@ email = {
   test: (config, val, data, cb) ->
     if not val?
       return cb(true, val)
-    if _.size(val) < 1
+    if _.size(val) is 0
       return cb(true, val)
     if _.isString(val)
       val = val.replace(/\s/g, '')
@@ -89,7 +89,7 @@ msisdn = {
   test: (config, val, data, cb) ->
     if not val?
       return cb(true, val)
-    if _.size(val) < 1
+    if _.size(val) is 0
       return cb(true, val)
     if _.isString(val)
       val = val.replace(/\s/g, '')
@@ -120,6 +120,27 @@ minlength = {
 maxlength = {
   msg: strings.TOO_LONG
   test: (config, val, data, cb) -> cb(_.size(val) <= config, val)
+}
+
+reference = {
+  msg: strings.REFERENCE_NOT_FOUND
+  test: (config, val, data, cb) ->
+    if not val?
+      return cb(true, val)
+    if not _.isString(val)
+      return cb(false, val)
+    if _.size(val) is 0
+      return cb(true, val)
+    query = {}
+    query[config.field] = val
+    config.db.collection(config.type)
+    .findOne(query, {_id:1}, (err, doc) ->
+      if err? then return cb(false, val)
+      if doc?
+        cb(true, doc._id)
+      else
+        cb(false, val)
+    )
 }
 
 string = {
@@ -158,6 +179,7 @@ module.exports = {
   longitude
   minlength
   maxlength
+  reference
   string
   url
   mongoid: {

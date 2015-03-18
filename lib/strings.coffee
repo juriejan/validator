@@ -6,6 +6,7 @@ module.exports = {
   IN_USE: 'In use'
   MATCH_REQUIRED: 'Needs to match <%= config.name %>'
   NOT_AVAILABLE: 'Not available'
+  REFERENCE_NOT_FOUND: "Reference not found with value '<%= val %>' on field '<%= config.field %>'"
   REQUIRED: 'Required'
   TOO_SHORT: 'Too short'
   TOO_LONG: 'Too long'

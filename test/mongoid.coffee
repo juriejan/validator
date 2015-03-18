@@ -50,6 +50,22 @@ describe('MongoDB ID validator', () ->
       testValidator({}, [], false)
     )
 
+    it('zero', () ->
+      testValidator({}, 0, false)
+    )
+
+    it('number', () ->
+      testValidator({}, 5, false)
+    )
+
+    it('true boolean', () ->
+      testValidator({}, true, false)
+    )
+
+    it('false boolean', () ->
+      testValidator({}, false, false)
+    )
+
     it('short ID', () ->
       testValidator({}, '507f1f77bcf86cd7994390', false)
     )
