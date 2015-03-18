@@ -27,6 +27,21 @@ RE_ENCODING_URL = /[^\w\d%+.-]/g
 #     )
 # }
 
+boolean = {
+  msg: strings.INVALID.BOOLEAN
+  test: (config, val, data, cb) ->
+    if not val?
+      return cb(null, true, val)
+    if _.isString(val)
+      val = val.replace(/\s/g, '')
+      if _.size(val) is 0 then return cb(null, true, val)
+    if val is true or val is 'true' or val < 0 or val > 0
+      return cb(null, true, true)
+    if val is false or val is 'false' or val is 0
+      return cb(null, true, false)
+    cb(null, false, val)
+}
+
 date = {
   msg: strings.DATE
   test: (config, val, data, cb) ->
@@ -259,6 +274,7 @@ url = {
 
 
 module.exports = {
+  boolean
   date
   email
   emailmsisdn
