@@ -24,7 +24,7 @@ Validator = (validation={}) ->
       [field, rules] = o
       state = {result:true, message:null}
       validateRule = _.bind(@.validateRule(state, field, data), @)
-      async.until((() -> not state.result)), validateRule, (err) ->
+      async.until((() -> not state.result), validateRule, (err) ->
         cb(null, [field, state.message])
       )
     validate: (data, cb) ->
