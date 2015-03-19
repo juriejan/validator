@@ -149,4 +149,18 @@ describe('Validator', () ->
     )
   )
 
+  it('handles extra data with no validators', (done) ->
+    validator = new Validator({})
+    data = {data:'sample data'}
+    validators.sample = {
+      msg: 'Sample Error'
+      test: (config, val, cb) -> cb(null, true, val)
+    }
+    validator.validate(data, (err, result) ->
+      if err? then return cb(err)
+      expect(result).to.eql({})
+      done()
+    )
+  )
+
 )
