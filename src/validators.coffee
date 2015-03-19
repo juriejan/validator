@@ -295,6 +295,22 @@ url = {
         cb(null, false, val)
 }
 
+weekday = {
+  msg: strings.INVALID.WEEKDAY
+  test: (config, val, cb) ->
+    if not val? then return cb(null, true, val)
+    if _.isString(val)
+      val = val.replace(/\s/g, '')
+      if _.size(val) is 0
+        return cb(null, true, val)
+      parsed = moment._locale.weekdaysParse(val)
+      if parsed is 0 then parsed = 7
+      return cb(null, !!parsed, parsed or val)
+    if _.isNumber(val)
+      return cb(null, (val > 0 and val < 8), val)
+    cb(null, false, val)
+}
+
 
 module.exports = {
   array
@@ -317,4 +333,5 @@ module.exports = {
   required
   string
   url
+  weekday
 }

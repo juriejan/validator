@@ -21,7 +21,10 @@ testValidator = (name) -> (config, val, result, modified, fault, cb) ->
       "Expected validation success result of '#{success}' to be '#{result}'."
     )
     if not modified? then modified = val
-    expect(resultVal).to.eql(modified)
+    expect(resultVal).to.eql(
+      modified
+      "Expected modified value '#{resultVal}' to be '#{modified}'."
+    )
     if fault? then expect(resultFault).to.eql(fault)
     if cb? then cb(null, resultVal)
   )
