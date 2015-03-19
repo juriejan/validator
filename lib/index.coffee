@@ -9,33 +9,39 @@ validators = require('./validators')
 
 Validator = (validation={}) ->
   return {
-    validateRule: (state, field, data) -> (cb) ->
-      [rule, config] = state.rules.pop()
-      value = data[field]
+    validateRule: (data) -> (state, item, cb) ->
+      [field, val, message] = state
+      [rule, config] = item
       validator = validators[rule]
-      validator.test(config, value, data, (err, result, val, fault) ->
+      validator.test(config, val, data, (err, success, val, fault) ->
         if err? then return cb(err)
-        data[field] = val
-        if not result
-          state.message = _.template(validator.msg)({config, fault, val})
-        cb()
+        if not success
+          message = _.template(validator.msg)({config, fault, val})
+          cb(true, [field, val, message])
+        else
+          cb(null, [field, val, message])
       )
-    validateField: (data) -> (o, cb) ->
-      [field, rules] = o
+    validateField: (data) -> (item, cb) ->
+      [field, rules, val] = item
+      validateRule = _.bind(@.validateRule(data), @)
       rules = _.pairs(rules)
-      rules.reverse()
-      state = {message:null, rules}
-      validateRule = _.bind(@.validateRule(state, field, data), @)
-      async.until((() -> state.message? or _.size(state.rules) is 0), validateRule, (err) ->
-        cb(null, [field, state.message])
+      async.reduce(rules, [field, val, null], validateRule, (err, result) ->
+        if err is true then return cb(null, result)
+        else if err? then return cb(err)
+        cb(null, result)
       )
     validate: (data, cb) ->
       _.each(data, (v, k) ->
         if _.isString(data[k]) then data[k] = v.trim()
       )
       validateField = _.bind(@.validateField(data), @)
-      async.map(_.pairs(validation), validateField, (err, result) ->
-        result = _.filter(result, (o) -> o[1]?)
+      items = _.pairs(validation)
+      _.each(items, (o) -> o[2] = data[o[0]])
+      async.map(items, validateField, (err, result) ->
+        if err? then return cb(err)
+        _.each(data, (v, k) -> data[k] = _.find(result, (o) -> o[0] is k)[1])
+        result = _.filter(result, (o) -> o[2]?)
+        result = _.map(result, (o) -> [o[0], o[2]])
         cb(err, _.object(result))
       )
   }
