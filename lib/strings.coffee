@@ -1,5 +1,6 @@
 
 module.exports = {
+  ARRAY: "Array item encountered error: <%= fault %>"
   BLOCKED: 'Field is blocked'
   DATE: "Date did not match '<%= config %>'"
   ENCODING: "Not fully encoded using the '<%= config %>' standard due to '<%= fault %>'"

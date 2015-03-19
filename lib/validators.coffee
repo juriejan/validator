@@ -27,6 +27,43 @@ RE_ENCODING_URL = /[^\w\d%+.-]/g
 #     )
 # }
 
+itemRule = (data) -> (state, item, cb) ->
+  [val, message] = state
+  [rule, config] = item
+  validator = module.exports[rule]
+  validator.test(config, val, data, (err, success, val, fault) ->
+    if err? then return cb(err)
+    if not success
+      message = _.template(validator.msg)({config, fault, val})
+      return cb(true, [val, message])
+    cb(null, [val, message])
+  )
+
+arrayItem = (data, rules) -> (item, cb) ->
+  async.reduce(rules, item, itemRule(data), (err, result) ->
+    if err is true then return cb(null, result)
+    else if err? then return cb(err)
+    cb(null, result)
+  )
+
+array = {
+  msg: strings.ARRAY
+  test: (config, val, data, cb) ->
+    if not val? then return cb(null, true, val)
+    if _.isString(val) and _.size(val) is 0
+      return cb(null, true, val)
+    if not _.isArray(val) then return cb(null, false, val)
+    val = _.map(val, (o) -> [o, null])
+    rules = _.pairs(config)
+    async.map(val, arrayItem(data, rules), (err, result) ->
+      if err? then return cb(err)
+      val = _.map(result, (o) -> o[0])
+      fault = _.find(result, (o) -> o[1]?)
+      if fault? then return cb(null, false, val, fault[1])
+      cb(null, true, val)
+    )
+}
+
 boolean = {
   msg: strings.INVALID.BOOLEAN
   test: (config, val, data, cb) ->
@@ -274,6 +311,7 @@ url = {
 
 
 module.exports = {
+  array
   boolean
   date
   email
