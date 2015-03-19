@@ -2,7 +2,7 @@
 chai = require('chai')
 
 utils = require('./utils')
-validators = require('../lib/validators')
+validators = require('../src/validators')
 
 expect = chai.expect
 

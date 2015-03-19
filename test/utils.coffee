@@ -3,7 +3,7 @@ _ = require('lodash')
 
 chai = require('chai')
 
-validator = require('../lib')
+validator = require('../src')
 
 Validator = validator.Validator
 validators = validator.validators

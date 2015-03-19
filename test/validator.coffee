@@ -1,6 +1,6 @@
 
 chai = require('chai')
-validator = require('../lib')
+validator = require('../src')
 
 expect = chai.expect
 Validator = validator.Validator
