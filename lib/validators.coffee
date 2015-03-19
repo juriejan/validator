@@ -18,7 +18,7 @@ RE_ENCODING_URL = /[^\w\d%+.-]/g
 
 # available = {
 #   msg: strings.NOT_AVAILABLE
-#   test: (config, val, data, cb) ->
+#   test: (config, val, cb) ->
 #     data = {}
 #     data[config] = val
 #     API.available(data, (err, data) ->
@@ -27,11 +27,12 @@ RE_ENCODING_URL = /[^\w\d%+.-]/g
 #     )
 # }
 
-itemRule = (data) -> (state, item, cb) ->
+itemRule = (state, item, cb) ->
   [val, message] = state
   [rule, config] = item
   validator = module.exports[rule]
-  validator.test(config, val, data, (err, success, val, fault) ->
+  test = _.bind(validator.test, @)
+  test(config, val, (err, success, val, fault) ->
     if err? then return cb(err)
     if not success
       message = _.template(validator.msg)({config, fault, val})
@@ -39,8 +40,9 @@ itemRule = (data) -> (state, item, cb) ->
     cb(null, [val, message])
   )
 
-arrayItem = (data, rules) -> (item, cb) ->
-  async.reduce(rules, item, itemRule(data), (err, result) ->
+arrayItem = (rules) -> (item, cb) =>
+  rule = _.bind(itemRule, @)
+  async.reduce(rules, item, rule, (err, result) ->
     if err is true then return cb(null, result)
     else if err? then return cb(err)
     cb(null, result)
@@ -48,14 +50,15 @@ arrayItem = (data, rules) -> (item, cb) ->
 
 array = {
   msg: strings.ARRAY
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val? then return cb(null, true, val)
     if _.isString(val) and _.size(val) is 0
       return cb(null, true, val)
     if not _.isArray(val) then return cb(null, false, val)
     val = _.map(val, (o) -> [o, null])
     rules = _.pairs(config)
-    async.map(val, arrayItem(data, rules), (err, result) ->
+    item = _.bind(arrayItem(rules), @)
+    async.map(val, item, (err, result) ->
       if err? then return cb(err)
       val = _.map(result, (o) -> o[0])
       fault = _.find(result, (o) -> o[1]?)
@@ -66,7 +69,7 @@ array = {
 
 boolean = {
   msg: strings.INVALID.BOOLEAN
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       return cb(null, true, val)
     if _.isString(val)
@@ -81,7 +84,7 @@ boolean = {
 
 date = {
   msg: strings.DATE
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if _.isNumber(val) or _.isBoolean(val) or _.isArray(val)
       return cb(null, false, val)
     if not val?
@@ -96,7 +99,7 @@ date = {
 
 email = {
   msg: strings.INVALID.EMAIL
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       return cb(null, true, val)
     if _.size(val) is 0
@@ -111,17 +114,19 @@ email = {
 
 emailmsisdn = {
   msg: strings.INVALID.EMAIL_MSISDN
-  test: (config, val, data, done) ->
+  test: (config, val, done) ->
     result = false
     async.waterfall([
-      (cb) ->
-        email.test(config, val, data, (err, success, val) ->
+      (cb) =>
+        emailTest = _.bind(email.test, @)
+        emailTest(config, val, (err, success, val) ->
           if err? then return cb(err)
           result = result or success
           cb(null, val)
         )
-      (val, cb) ->
-        msisdn.test(config, val, data, (err, success, val) ->
+      (val, cb) =>
+        msisdnTest = _.bind(msisdn.test, @)
+        msisdnTest(config, val, (err, success, val) ->
           if err? then return cb(err)
           result = result or success
           cb(null, val)
@@ -134,7 +139,7 @@ emailmsisdn = {
 
 encoding = {
   msg: strings.ENCODING
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       return cb(null, true, val)
     if not _.isString(val)
@@ -154,12 +159,12 @@ encoding = {
 
 enumerate = {
   msg: strings.INVALID.VALUE
-  test: (config, val, data, cb) -> cb(null, config.indexOf(val) > -1, val)
+  test: (config, val, cb) -> cb(null, config.indexOf(val) > -1, val)
 }
 
 geocoordinates = {
   msg: strings.INVALID.GEO_COORDINATES
-  test: (config, val, data, done) ->
+  test: (config, val, done) ->
     async.parallel({
       lat: (cb) -> latitude.test(config, val.lat, data, (err, result, val) ->
         if result is false then return cb(true)
@@ -177,7 +182,7 @@ geocoordinates = {
 
 latitude = {
   msg: strings.INVALID.LATITUDE
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     val = parseFloat(val)
     if _.isNaN(val) then return cb(null, false, val)
     if not(-90 < val < 90) then return cb(null, false, val)
@@ -186,7 +191,7 @@ latitude = {
 
 longitude = {
   msg: strings.INVALID.LONGITUDE
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     val = parseFloat(val)
     if _.isNaN(val) then return cb(null, false, val)
     if not(-180 < val < 180) then return cb(null, false, val)
@@ -195,7 +200,7 @@ longitude = {
 
 integer = {
   msg: strings.INVALID.INTEGER
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     result = parseInt(val)
     if _.isNaN(result)
       cb(null, false, val)
@@ -205,23 +210,23 @@ integer = {
 
 match = {
   msg: strings.MATCH_REQUIRED
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     cb(null, data[config.field] is val, val)
 }
 
 maxlength = {
   msg: strings.TOO_LONG
-  test: (config, val, data, cb) -> cb(null, _.size(val) <= config, val)
+  test: (config, val, cb) -> cb(null, _.size(val) <= config, val)
 }
 
 minlength = {
   msg: strings.TOO_SHORT
-  test: (config, val, data, cb) -> cb(null, _.size(val) >= config, val)
+  test: (config, val, cb) -> cb(null, _.size(val) >= config, val)
 }
 
 mongoid = {
   msg: strings.INVALID.MONGOID
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       return cb(null, true, val)
     if not _.isString(val)
@@ -237,7 +242,7 @@ mongoid = {
 
 msisdn = {
   msg: strings.INVALID.MSISDN
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       return cb(null, true, val)
     if _.size(val) is 0
@@ -255,7 +260,7 @@ msisdn = {
 
 reference = {
   msg: strings.REFERENCE_NOT_FOUND
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       return cb(null, true, val)
     if not _.isString(val)
@@ -276,7 +281,7 @@ reference = {
 
 required = {
   msg: strings.REQUIRED
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     valid = false
     valid or= _.isBoolean(val)
     valid or= _.isNumber(val)
@@ -286,7 +291,7 @@ required = {
 
 string = {
   msg: strings.INVALID.STRING
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       cb(null, true, val)
     else
@@ -295,7 +300,7 @@ string = {
 
 url = {
   msg: strings.INVALID.URI
-  test: (config, val, data, cb) ->
+  test: (config, val, cb) ->
     if not val?
       cb(null, true, val)
     else

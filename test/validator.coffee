@@ -13,7 +13,7 @@ describe('Validator', () ->
     validator = new Validator({data:{sample:true}})
     validators.sample = {
       msg: 'Sample Error'
-      test: (config, val, data, cb) -> cb('sample error')
+      test: (config, val, cb) -> cb('sample error')
     }
     validator.validate({data:0}, (err) ->
       expect(err).to.eql('sample error')
@@ -30,10 +30,10 @@ describe('Validator', () ->
     }
     validators.sample = {
       msg: 'Error'
-      test: (config, val, data, cb) ->
+      test: (config, val, cb) ->
+        expect(@).to.eql(validator)
         expect(val).to.eql('sample data')
         expect(config).to.eql('sample config')
-        expect(data).to.eql(sampleData)
         cb(null, true, val)
     }
     validator.validate(sampleData, (err, result) ->
@@ -44,7 +44,7 @@ describe('Validator', () ->
   )
 
   it('uses indicated validator appropriately on multiple fields', (done) ->
-    [configs, vals, datas] = [[], [], []]
+    [configs, vals] = [[], []]
     validator = new Validator({
       one: {sample:'config one'}
       two: {sample:'config two'}
@@ -55,24 +55,22 @@ describe('Validator', () ->
     }
     validators.sample = {
       msg: 'Error'
-      test: (config, val, data, cb) ->
+      test: (config, val, cb) ->
         configs.push(config)
         vals.push(val)
-        datas.push(data)
         cb(null, true, val)
     }
     validator.validate(sampleData, (err, result) ->
       if err? then return cb(err)
       expect(configs).to.eql(['config one', 'config two'])
       expect(vals).to.eql(['data one', 'data two'])
-      expect(datas).to.eql([sampleData, sampleData])
       expect(result).to.eql({})
       done()
     )
   )
 
   it('uses multiple validators appropriately', (done) ->
-    [configs, vals, datas] = [[], [], []]
+    [configs, vals] = [[], []]
     validator = new Validator({
       data: {
         sampleOne: 'config one'
@@ -82,25 +80,22 @@ describe('Validator', () ->
     sampleData = {data:'sample data'}
     validators.sampleOne = {
       msg: 'Error One'
-      test: (config, val, data, cb) ->
+      test: (config, val, cb) ->
         configs.push(config)
         vals.push(val)
-        datas.push(data)
         cb(null, true, val)
     }
     validators.sampleTwo = {
       msg: 'Error Two'
-      test: (config, val, data, cb) ->
+      test: (config, val, cb) ->
         configs.push(config)
         vals.push(val)
-        datas.push(data)
         cb(null, true, val)
     }
     validator.validate(sampleData, (err, result) ->
       if err? then return cb(err)
       expect(configs).to.eql(['config one', 'config two'])
       expect(vals).to.eql(['sample data', 'sample data'])
-      expect(datas).to.eql([sampleData, sampleData])
       expect(result).to.eql({})
       done()
     )
@@ -117,7 +112,7 @@ describe('Validator', () ->
     }
     validators.sample = {
       msg: 'Sample Error'
-      test: (config, val, data, cb) ->
+      test: (config, val, cb) ->
         cb(null, false, val)
     }
     validator.validate(sampleData, (err, result) ->
@@ -141,7 +136,7 @@ describe('Validator', () ->
     }
     validators.sample = {
       msg: 'Sample Error'
-      test: (config, val, data, cb) ->
+      test: (config, val, cb) ->
         cb(null, true, "altered #{val}")
     }
     validator.validate(sampleData, (err, result) ->

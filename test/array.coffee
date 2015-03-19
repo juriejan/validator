@@ -14,7 +14,7 @@ describe('Array validator', () ->
 
   it('surfaces errors from referenced validators', (done) ->
     validators.sample = {
-      test: (config, val, data, cb) -> cb('sample error')
+      test: (config, val, cb) -> cb('sample error')
     }
     testValidator({sample:true}, [0], true, [0], null, (err) ->
       expect(err).to.eql('sample error')
