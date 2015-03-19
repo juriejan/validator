@@ -27,27 +27,6 @@ RE_ENCODING_URL = /[^\w\d%+.-]/g
 #     )
 # }
 
-itemRule = (state, item, cb) ->
-  [val, message] = state
-  [rule, config] = item
-  validator = module.exports[rule]
-  test = _.bind(validator.test, @)
-  test(config, val, (err, success, val, fault) ->
-    if err? then return cb(err)
-    if not success
-      message = _.template(validator.msg)({config, fault, val})
-      return cb(true, [val, message])
-    cb(null, [val, message])
-  )
-
-arrayItem = (rules) -> (item, cb) =>
-  rule = _.bind(itemRule, @)
-  async.reduce(rules, item, rule, (err, result) ->
-    if err is true then return cb(null, result)
-    else if err? then return cb(err)
-    cb(null, result)
-  )
-
 array = {
   msg: strings.ARRAY
   test: (config, val, cb) ->
@@ -55,15 +34,17 @@ array = {
     if _.isString(val) and _.size(val) is 0
       return cb(null, true, val)
     if not _.isArray(val) then return cb(null, false, val)
-    val = _.map(val, (o) -> [o, null])
-    rules = _.pairs(config)
-    item = _.bind(arrayItem(rules), @)
-    async.map(val, item, (err, result) ->
+
+    items = _.map(val, (o) -> [null, config, o])
+    validateField = _.bind(@.validateField, @)
+    async.map(items, validateField, (err, result) ->
       if err? then return cb(err)
-      val = _.map(result, (o) -> o[0])
-      fault = _.find(result, (o) -> o[1]?)
-      if fault? then return cb(null, false, val, fault[1])
-      cb(null, true, val)
+      _.each(val, (o, n) => val[n] = result[n][1])
+      fault = _.find(result, (o) -> o[2]?)
+      if fault?
+        cb(null, false, val, fault[2])
+      else
+        cb(null, true, val)
     )
 }
 
