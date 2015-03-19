@@ -7,10 +7,10 @@ testValidator = utils.testValidator('encoding')
 
 describe('Encoding validator', () ->
 
-  describe('passes over', () ->
+  describe('succeeds on', () ->
 
-    it('url encoded string with correct encoding', () ->
-      testValidator('url', 'a%20b%22c+d.f-g', false, 'a b"c d.f-g')
+    it('url encoded string', () ->
+      testValidator('url', 'a%20b%22c+d.f-g*h', true, 'a b"c d.f-g*h')
     )
 
     it('empty string', () ->
@@ -27,7 +27,7 @@ describe('Encoding validator', () ->
 
   )
 
-  describe('returns error on', () ->
+  describe('fails on', () ->
 
     it('url encoded string with bad encoding', () ->
       testValidator('url', 'a%%20b%22c', false)
