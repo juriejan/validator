@@ -34,8 +34,7 @@ array = {
     if _.isString(val) and _.size(val) is 0
       return cb(null, true, val)
     if not _.isArray(val) then return cb(null, false, val)
-
-    items = _.map(val, (o) -> [null, config, o])
+    items = _.map(val, (o) -> [null, o, config])
     validateField = _.bind(@.validateField, @)
     async.map(items, validateField, (err, result) ->
       if err? then return cb(err)

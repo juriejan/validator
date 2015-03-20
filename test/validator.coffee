@@ -5,6 +5,7 @@ validator = require('../src')
 expect = chai.expect
 Validator = validator.Validator
 validators = validator.validators
+strings = validator.strings
 
 
 describe('Validator', () ->
@@ -12,7 +13,7 @@ describe('Validator', () ->
   it('surfaces errors', (done) ->
     validator = new Validator({data:{sample:true}})
     validators.sample = {
-      msg: 'Sample Error'
+      msg: 'Sample Message'
       test: (config, val, cb) -> cb('sample error')
     }
     validator.validate({data:0}, (err) ->
@@ -149,16 +150,14 @@ describe('Validator', () ->
     )
   )
 
-  it('handles extra data with no validators', (done) ->
+  it('raises an error for unexpected fields', (done) ->
     validator = new Validator({})
     data = {data:'sample data'}
-    validators.sample = {
-      msg: 'Sample Error'
-      test: (config, val, cb) -> cb(null, true, val)
-    }
     validator.validate(data, (err, result) ->
       if err? then return cb(err)
-      expect(result).to.eql({})
+      expect(result).to.eql({
+        data: strings.UNEXPECTED
+      })
       done()
     )
   )

@@ -11,6 +11,7 @@ module.exports = {
   REQUIRED: 'Required'
   TOO_SHORT: 'Too short'
   TOO_LONG: 'Too long'
+  UNEXPECTED: 'Unexpected'
   INVALID: {
     BOOLEAN: 'Invalid boolean'
     EMAIL: 'Invalid email address'
