@@ -13,7 +13,7 @@ RE_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 RE_MSISDN = /^(\+?27|0)(\d{9})$/
 RE_MONGOID = /^[a-z0-9]{24}$/
 
-RE_ENCODING_URL = /[^\w\d%+.-]/g
+RE_ENCODING_URL = /[^\w\d%+.\-\*]/g
 
 
 # available = {
