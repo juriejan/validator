@@ -145,13 +145,16 @@ enumerate = {
 geocoordinates = {
   msg: strings.INVALID.GEO_COORDINATES
   test: (config, val, done) ->
+    result = false
     async.parallel({
-      lat: (cb) -> latitude.test(config, val.lat, data, (err, result, val) ->
-        if result is false then return cb(true)
+      lat: (cb) -> latitude.test(config, val.lat, (err, success, val) ->
+        if err? then return cb(err)
+        result = result or success
         cb(null, val)
       )
-      lng: (cb) -> longitude.test(config, val.lng, data, (err, result, val) ->
-        if result is false then return cb(true)
+      lng: (cb) -> longitude.test(config, val.lng, (err, success, val) ->
+        if err? then return cb(err)
+        result = result or success
         cb(null, val)
       )
     }, (err, result) ->
