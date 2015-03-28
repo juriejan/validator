@@ -150,6 +150,22 @@ describe('Validator', () ->
     )
   )
 
+  it('runs validators for missing data', (done) ->
+    validated = false
+    validator = new Validator({data:{sample:true}})
+    validators.sample = {
+      msg: 'Sample Error'
+      test: (config, val, cb) ->
+        validated = true
+        cb(null, true, val)
+    }
+    validator.validate({}, (err, result) ->
+      if err? then return cb(err)
+      expect(validated).to.eql(true)
+      done()
+    )
+  )
+
   it('raises an error for unexpected fields', (done) ->
     validator = new Validator({})
     data = {data:'sample data'}

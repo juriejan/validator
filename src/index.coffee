@@ -35,8 +35,8 @@ Validator = (validation={}) ->
     validate: (data, cb) ->
       @.data = data
       validateField = _.bind(@.validateField, @)
-      items = _.pairs(@.data)
-      _.each(items, (o) => o[2] = validation[o[0]])
+      keys = _.union(_.keys(@.data), _.keys(validation))
+      items = _.map(keys, (o) -> [o, data[o], validation[o]])
       async.map(items, validateField, (err, result) =>
         if err? then return cb(err)
         _.each(@.data, (v, k) =>
