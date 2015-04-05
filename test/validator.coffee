@@ -1,4 +1,6 @@
 
+_ = require('lodash')
+
 chai = require('chai')
 validator = require('../src')
 
@@ -173,6 +175,35 @@ describe('Validator', () ->
       if err? then return cb(err)
       expect(result).to.eql({
         data: strings.UNEXPECTED
+      })
+      done()
+    )
+  )
+
+  it('reassigns values of entire object despite falsey values', (done) ->
+    validator = new Validator({
+      number: {sample:true}
+      boolean: {sample:true}
+      string: {sample:true}
+      final: {sample:true}
+    })
+    validators.sample = {
+      msg: 'Sample Error'
+      test: (config, val, cb) ->
+        if val is 'no' then return cb(null, true, 'yes')
+        if _.isNumber(val) then val = 0
+        if _.isBoolean(val) then val = false
+        if _.isString(val) then val = ''
+        cb(null, true, val)
+    }
+    data = {number:1, boolean:true, string:'content', final:'no'}
+    validator.validate(data, (err, result) ->
+      if err? then return cb(err)
+      expect(data).to.eql({
+        number: 0
+        boolean: false
+        string: ''
+        final: 'yes'
       })
       done()
     )

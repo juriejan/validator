@@ -39,8 +39,9 @@ Validator = (validation={}) ->
       items = _.map(keys, (o) -> [o, data[o], validation[o]])
       async.map(items, validateField, (err, result) =>
         if err? then return cb(err)
-        _.each(@.data, (v, k) =>
+        _.each(data, (v, k) =>
           data[k] = _.find(result, (o) -> o[0] is k)[1]
+          return true
         )
         result = _.filter(result, (o) -> o[2]?)
         result = _.map(result, (o) -> [o[0], o[2]])
