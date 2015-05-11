@@ -2,6 +2,7 @@
 _ = require('lodash')
 
 async = require('async')
+through = require('through')
 
 strings = require('./strings')
 validators = require('./validators')
@@ -50,8 +51,22 @@ Validator = (validation={}) ->
   }
 
 
+stream = (validation={}) ->
+  return through((data) ->
+    validator = new Validator(validation)
+    validator.validate(data, (err, result) =>
+      if err? then return @.emit('error', err)
+      if _.size(result) > 0
+        @.emit('failed', result)
+      else
+        @.queue(data)
+    )
+  )
+
+
 module.exports = {
   Validator
+  stream
   validators
   strings
 }
