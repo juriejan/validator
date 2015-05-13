@@ -313,6 +313,21 @@ weekday = {
     cb(null, false, val)
 }
 
+validate = {
+  msg: strings.INVALID.VALIDATE
+  test: (config, val, cb) ->
+    if not val? then return cb(null, true, val)
+    validator = new require('./').Validator(config)
+    validator.validate(val, (err, result) ->
+      if err? then return cb(err)
+      # Todo: Return validation errors
+      if _.size(result) > 0
+        cb(null, false, val)
+      else
+        cb(null, true, val)
+    )
+}
+
 
 module.exports = {
   array
@@ -336,4 +351,5 @@ module.exports = {
   string
   url
   weekday
+  validate
 }

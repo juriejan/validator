@@ -24,5 +24,6 @@ module.exports = {
     MSISDN: 'Invalid mobile number'
     STRING: 'Invalid string'
     VALUE: 'Invalid value'
+    VALIDATE: 'Failed validation'
   }
 }
