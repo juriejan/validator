@@ -305,7 +305,7 @@ weekday = {
       val = val.replace(/\s/g, '')
       if _.size(val) is 0
         return cb(null, true, val)
-      parsed = moment._locale.weekdaysParse(val)
+      parsed = moment.localeData().weekdaysParse(val)
       if parsed is 0 then parsed = 7
       return cb(null, !!parsed, parsed or val)
     if _.isNumber(val)
