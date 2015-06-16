@@ -13,9 +13,10 @@
     "gulp-plumber": "^1.0.0",
     "gulp-util": "^3.0.4",
     "lodash": "^3.0.0",
-    "moment": "^2.9.0",
+    "moment": "^2.10.2",
     "mongojs": "^0.18.1",
     "node-notifier": "^4.1.2",
+    "through": "^2.3.7",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

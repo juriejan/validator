@@ -2,6 +2,7 @@
 _ = require('lodash')
 
 async = require('async')
+through = require('through')
 
 strings = require('./strings')
 validators = require('./validators')
@@ -39,8 +40,9 @@ Validator = (validation={}) ->
       items = _.map(keys, (o) -> [o, data[o], validation[o]])
       async.map(items, validateField, (err, result) =>
         if err? then return cb(err)
-        _.each(@.data, (v, k) =>
+        _.each(data, (v, k) =>
           data[k] = _.find(result, (o) -> o[0] is k)[1]
+          return true
         )
         result = _.filter(result, (o) -> o[2]?)
         result = _.map(result, (o) -> [o[0], o[2]])
@@ -49,8 +51,22 @@ Validator = (validation={}) ->
   }
 
 
+stream = (validation={}) ->
+  return through((data) ->
+    validator = new Validator(validation)
+    validator.validate(data, (err, result) =>
+      if err? then return @.emit('error', err)
+      if _.size(result) > 0
+        @.emit('failed', result)
+      else
+        @.queue(data)
+    )
+  )
+
+
 module.exports = {
   Validator
+  stream
   validators
   strings
 }
