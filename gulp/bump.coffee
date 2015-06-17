@@ -32,7 +32,7 @@ bumpVersion = (filename, done) ->
 
 gulp.task('bump', (done) ->
   async.series([
-    (cb) -> bumpVersion('./package.json', cb)
-    (cb) -> bumpVersion('./bower.json', cb)
+    (cb) -> bumpVersion('package.json', cb)
+    (cb) -> bumpVersion('bower.json', cb)
   ], done)
 )
