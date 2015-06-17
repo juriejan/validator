@@ -10,11 +10,11 @@ minimist = require('minimist')
 semver = require('semver')
 
 
-gulp.task('bump', (done) ->
+bumpVersion = (filename, done) ->
   version = null
   async.series([
     (cb) ->
-      fs.readJson('./package.json', (err, data) ->
+      fs.readJson(filename, (err, data) ->
         if err? then return cb(err)
         args = minimist(process.argv.slice(3))
         type = _.keys(args)[1] or 'patch'
@@ -23,9 +23,16 @@ gulp.task('bump', (done) ->
         cb()
       )
     (cb) ->
-      gulp.src(['./package.json'])
+      gulp.src([filename])
       .pipe(jsonedit({version}))
       .pipe(gulp.dest('./'))
       .pipe(end(cb))
+  ], done)
+
+
+gulp.task('bump', (done) ->
+  async.series([
+    (cb) -> bumpVersion('./package.json', cb)
+    (cb) -> bumpVersion('./bower.json', cb)
   ], done)
 )
