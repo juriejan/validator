@@ -2,16 +2,16 @@
 _ = require('lodash')
 
 async = require('async')
-mongojs = require('mongojs')
+# mongojs = require('mongojs')
 moment = require('moment')
-validurl = require('valid-url')
+# validurl = require('valid-url')
 
 strings = require('./strings')
 
 
 RE_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 RE_MSISDN = /^(\+?27|0)(\d{9})$/
-RE_MONGOID = /^[a-z0-9]{24}$/
+# RE_MONGOID = /^[a-z0-9]{24}$/
 
 RE_ENCODING_URL = /[^\w\d%+.\-\*]/g
 
@@ -207,21 +207,21 @@ minlength = {
   test: (config, val, cb) -> cb(null, _.size(val) >= config, val)
 }
 
-mongoid = {
-  msg: strings.INVALID.MONGOID
-  test: (config, val, cb) ->
-    if not val?
-      return cb(null, true, val)
-    if not _.isString(val)
-      return cb(null, false, val)
-    if _.size(val) is 0
-      return cb(null, true, val)
-    val = val.replace(/\s/g, '')
-    if RE_MONGOID.test(val) is true
-      cb(null, true, new mongojs.ObjectId(val))
-    else
-      cb(null, false, val)
-}
+# mongoid = {
+#   msg: strings.INVALID.MONGOID
+#   test: (config, val, cb) ->
+#     if not val?
+#       return cb(null, true, val)
+#     if not _.isString(val)
+#       return cb(null, false, val)
+#     if _.size(val) is 0
+#       return cb(null, true, val)
+#     val = val.replace(/\s/g, '')
+#     if RE_MONGOID.test(val) is true
+#       cb(null, true, new mongojs.ObjectId(val))
+#     else
+#       cb(null, false, val)
+# }
 
 msisdn = {
   msg: strings.INVALID.MSISDN
@@ -281,21 +281,21 @@ string = {
       cb(null, _.isString(val), val)
 }
 
-url = {
-  msg: strings.INVALID.URI
-  test: (config, val, cb) ->
-    if not val?
-      cb(null, true, val)
-    else
-      if _.isString(val)
-        val = val.replace(/\s/g, '')
-        if _.size(val) is 0
-          cb(null, true, val)
-        else
-          cb(null, !!validurl.isWebUri(val), val)
-      else
-        cb(null, false, val)
-}
+# url = {
+#   msg: strings.INVALID.URI
+#   test: (config, val, cb) ->
+#     if not val?
+#       cb(null, true, val)
+#     else
+#       if _.isString(val)
+#         val = val.replace(/\s/g, '')
+#         if _.size(val) is 0
+#           cb(null, true, val)
+#         else
+#           cb(null, !!validurl.isWebUri(val), val)
+#       else
+#         cb(null, false, val)
+# }
 
 weekday = {
   msg: strings.INVALID.WEEKDAY
@@ -345,11 +345,11 @@ module.exports = {
   match
   maxlength
   minlength
-  mongoid
+  # mongoid
   reference
   required
   string
-  url
+  # url
   weekday
   validate
 }

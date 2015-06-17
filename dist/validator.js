@@ -124,25 +124,19 @@ module.exports = {
 
 
 },{}],3:[function(require,module,exports){
-var RE_EMAIL, RE_ENCODING_URL, RE_MONGOID, RE_MSISDN, _, array, async, boolean, date, email, emailmsisdn, encoding, enumerate, geocoordinates, integer, latitude, longitude, match, maxlength, minlength, moment, mongoid, mongojs, msisdn, reference, required, string, strings, url, validate, validurl, weekday;
+var RE_EMAIL, RE_ENCODING_URL, RE_MSISDN, _, array, async, boolean, date, email, emailmsisdn, encoding, enumerate, geocoordinates, integer, latitude, longitude, match, maxlength, minlength, moment, msisdn, reference, required, string, strings, validate, weekday;
 
 _ = require('lodash');
 
 async = require('async');
 
-mongojs = require('mongojs');
-
 moment = require('moment');
-
-validurl = require('valid-url');
 
 strings = require('./strings');
 
 RE_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
 RE_MSISDN = /^(\+?27|0)(\d{9})$/;
-
-RE_MONGOID = /^[a-z0-9]{24}$/;
 
 RE_ENCODING_URL = /[^\w\d%+.\-\*]/g;
 
@@ -420,27 +414,6 @@ minlength = {
   }
 };
 
-mongoid = {
-  msg: strings.INVALID.MONGOID,
-  test: function(config, val, cb) {
-    if (val == null) {
-      return cb(null, true, val);
-    }
-    if (!_.isString(val)) {
-      return cb(null, false, val);
-    }
-    if (_.size(val) === 0) {
-      return cb(null, true, val);
-    }
-    val = val.replace(/\s/g, '');
-    if (RE_MONGOID.test(val) === true) {
-      return cb(null, true, new mongojs.ObjectId(val));
-    } else {
-      return cb(null, false, val);
-    }
-  }
-};
-
 msisdn = {
   msg: strings.INVALID.MSISDN,
   test: function(config, val, cb) {
@@ -517,26 +490,6 @@ string = {
   }
 };
 
-url = {
-  msg: strings.INVALID.URI,
-  test: function(config, val, cb) {
-    if (val == null) {
-      return cb(null, true, val);
-    } else {
-      if (_.isString(val)) {
-        val = val.replace(/\s/g, '');
-        if (_.size(val) === 0) {
-          return cb(null, true, val);
-        } else {
-          return cb(null, !!validurl.isWebUri(val), val);
-        }
-      } else {
-        return cb(null, false, val);
-      }
-    }
-  }
-};
-
 weekday = {
   msg: strings.INVALID.WEEKDAY,
   test: function(config, val, cb) {
@@ -599,15 +552,13 @@ module.exports = {
   match: match,
   maxlength: maxlength,
   minlength: minlength,
-  mongoid: mongoid,
   reference: reference,
   required: required,
   string: string,
-  url: url,
   weekday: weekday,
   validate: validate
 };
 
 
-},{"./strings":2,"async":undefined,"lodash":undefined,"moment":undefined,"mongojs":undefined,"valid-url":undefined}]},{},[1])(1)
+},{"./strings":2,"async":undefined,"lodash":undefined,"moment":undefined}]},{},[1])(1)
 });
