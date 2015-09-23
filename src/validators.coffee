@@ -11,6 +11,7 @@ strings = require('./strings')
 
 RE_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 RE_MSISDN = /^(\+?27|0)(\d{9})$/
+RE_INTEGER = /^(\-|\+)?([0-9]+|Infinity)$/
 # RE_MONGOID = /^[a-z0-9]{24}$/
 
 RE_ENCODING_URL = /[^\w\d%+.\-\*]/g
@@ -77,6 +78,16 @@ date = {
     else cb(null, false, val)
 }
 
+decimal = {
+  msg: strings.INVALID.DECIMAL
+  test: (config, val, cb) ->
+    result = parseFloat(val)
+    if _.isNaN(result)
+      cb(null, false, val)
+    else
+      cb(null, true, result)
+}
+
 email = {
   msg: strings.INVALID.EMAIL
   test: (config, val, cb) ->
@@ -86,7 +97,6 @@ email = {
       return cb(null, true, val)
     if _.isString(val)
       val = val.replace(/\s/g, '')
-      match = RE_EMAIL.test(val)
       cb(null, RE_EMAIL.test(val), val)
     else
       cb(null, false, val)
@@ -184,11 +194,10 @@ longitude = {
 integer = {
   msg: strings.INVALID.INTEGER
   test: (config, val, cb) ->
-    result = parseInt(val)
-    if _.isNaN(result)
-      cb(null, false, val)
+    if RE_INTEGER.test(val)
+      cb(null, true, parseInt(val))
     else
-      cb(null, true, result)
+      cb(null, false, val)
 }
 
 match = {
@@ -333,6 +342,7 @@ module.exports = {
   array
   boolean
   date
+  decimal
   email
   emailmsisdn
   encoding

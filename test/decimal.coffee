@@ -2,12 +2,20 @@
 utils = require('./utils')
 
 
-testValidator = utils.testValidator('integer')
+testValidator = utils.testValidator('decimal')
 
 
-describe('Integer validator', () ->
+describe('Decimal validator', () ->
 
   describe('passes over', () ->
+
+    it('decimal', () ->
+      testValidator({}, 1.0, true, 1)
+    )
+
+    it('decimal string', () ->
+      testValidator({}, '1.0', true, 1)
+    )
 
     it('integer', () ->
       testValidator({}, 1, true, 1)
@@ -24,14 +32,6 @@ describe('Integer validator', () ->
   )
 
   describe('returns error on', () ->
-
-    it('decimal', () ->
-      testValidator({}, 1.1, false)
-    )
-
-    it('decimal string', () ->
-      testValidator({}, '1.1', false)
-    )
 
     it('string', () ->
       testValidator({}, 'sample', false)

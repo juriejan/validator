@@ -18,6 +18,7 @@ module.exports = {
     EMAIL_MSISDN: 'Invalid email address and mobile number'
     GEO_COORDINATES: 'Invalid geographic coordinates'
     INTEGER: 'Invalid integer'
+    INTEGER: 'Invalid decimal'
     LATITUDE: 'Invalid latitude'
     LONGITUDE: 'Invalid longitude'
     MONGOID: 'Invalid ID'

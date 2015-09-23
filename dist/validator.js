@@ -112,6 +112,7 @@ module.exports = {
     EMAIL_MSISDN: 'Invalid email address and mobile number',
     GEO_COORDINATES: 'Invalid geographic coordinates',
     INTEGER: 'Invalid integer',
+    INTEGER: 'Invalid decimal',
     LATITUDE: 'Invalid latitude',
     LONGITUDE: 'Invalid longitude',
     MONGOID: 'Invalid ID',
@@ -124,7 +125,7 @@ module.exports = {
 
 
 },{}],3:[function(require,module,exports){
-var RE_EMAIL, RE_ENCODING_URL, RE_MSISDN, _, array, async, boolean, date, email, emailmsisdn, encoding, enumerate, geocoordinates, integer, latitude, longitude, match, maxlength, minlength, moment, msisdn, reference, required, string, strings, validate, weekday;
+var RE_EMAIL, RE_ENCODING_URL, RE_INTEGER, RE_MSISDN, _, array, async, boolean, date, decimal, email, emailmsisdn, encoding, enumerate, geocoordinates, integer, latitude, longitude, match, maxlength, minlength, moment, msisdn, reference, required, string, strings, validate, weekday;
 
 _ = require('lodash');
 
@@ -137,6 +138,8 @@ strings = require('./strings');
 RE_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
 RE_MSISDN = /^(\+?27|0)(\d{9})$/;
+
+RE_INTEGER = /^(\-|\+)?([0-9]+|Infinity)$/;
 
 RE_ENCODING_URL = /[^\w\d%+.\-\*]/g;
 
@@ -223,10 +226,22 @@ date = {
   }
 };
 
+decimal = {
+  msg: strings.INVALID.DECIMAL,
+  test: function(config, val, cb) {
+    var result;
+    result = parseFloat(val);
+    if (_.isNaN(result)) {
+      return cb(null, false, val);
+    } else {
+      return cb(null, true, result);
+    }
+  }
+};
+
 email = {
   msg: strings.INVALID.EMAIL,
   test: function(config, val, cb) {
-    var match;
     if (val == null) {
       return cb(null, true, val);
     }
@@ -235,7 +250,6 @@ email = {
     }
     if (_.isString(val)) {
       val = val.replace(/\s/g, '');
-      match = RE_EMAIL.test(val);
       return cb(null, RE_EMAIL.test(val), val);
     } else {
       return cb(null, false, val);
@@ -383,12 +397,10 @@ longitude = {
 integer = {
   msg: strings.INVALID.INTEGER,
   test: function(config, val, cb) {
-    var result;
-    result = parseInt(val);
-    if (_.isNaN(result)) {
-      return cb(null, false, val);
+    if (RE_INTEGER.test(val)) {
+      return cb(null, true, parseInt(val));
     } else {
-      return cb(null, true, result);
+      return cb(null, false, val);
     }
   }
 };
@@ -540,6 +552,7 @@ module.exports = {
   array: array,
   boolean: boolean,
   date: date,
+  decimal: decimal,
   email: email,
   emailmsisdn: emailmsisdn,
   encoding: encoding,
