@@ -1,12 +1,12 @@
 {
   "name": "validator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": [
     "dist/validator.js"
   ],
   "dependencies": {
-    "async": "~1.2.1",
-    "lodash": "~3.9.3",
-    "moment": "~2.10.3"
+    "async": "~1.4.2",
+    "lodash": "~3.10.1",
+    "moment": "~2.10.6"
   }
 }
