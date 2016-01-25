@@ -27,7 +27,7 @@ Validator = (validation={}) ->
       [field, val, rules] = item
       validateRule = _.bind(@.validateRule, @)
       if not rules? then return cb(null, [field, val, strings.UNEXPECTED])
-      rules = _.pairs(rules)
+      rules = _.toPairs(rules)
       async.reduce(rules, [field, val, null], validateRule, (err, result) ->
         if err is true then return cb(null, result)
         else if err? then return cb(err)
@@ -46,7 +46,7 @@ Validator = (validation={}) ->
         )
         result = _.filter(result, (o) -> o[2]?)
         result = _.map(result, (o) -> [o[0], o[2]])
-        cb(err, _.object(result))
+        cb(err, _.zipObject(result))
       )
   }
 

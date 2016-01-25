@@ -44,7 +44,7 @@ Validator = function(validation) {
       if (rules == null) {
         return cb(null, [field, val, strings.UNEXPECTED]);
       }
-      rules = _.pairs(rules);
+      rules = _.toPairs(rules);
       return async.reduce(rules, [field, val, null], validateRule, function(err, result) {
         if (err === true) {
           return cb(null, result);
@@ -79,7 +79,7 @@ Validator = function(validation) {
           result = _.map(result, function(o) {
             return [o[0], o[2]];
           });
-          return cb(err, _.object(result));
+          return cb(err, _.zipObject(result));
         };
       })(this));
     }
