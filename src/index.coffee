@@ -46,7 +46,7 @@ Validator = (validation={}) ->
         )
         result = _.filter(result, (o) -> o[2]?)
         result = _.map(result, (o) -> [o[0], o[2]])
-        cb(err, _.zipObject(result))
+        cb(err, _.fromPairs(result))
       )
   }
 
