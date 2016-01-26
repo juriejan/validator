@@ -79,7 +79,7 @@ Validator = function(validation) {
           result = _.map(result, function(o) {
             return [o[0], o[2]];
           });
-          return cb(err, _.zipObject(result));
+          return cb(err, _.fromPairs(result));
         };
       })(this));
     }
